@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS Rating</title>
+
+    <link href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <style>
+        .stars-outer {
+            position: relative;
+            display: inline-block;
+        }
+
+        .stars-inner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 0;
+        }
+
+        .stars-outer::before {
+            content: "\f005 \f005 \f005 \f005 \f005";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            color: #ccc;
+        }
+
+        .stars-inner::before {
+            content: "\f005 \f005 \f005 \f005 \f005";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            color: #f8ce0b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="form-group">
+            <select id="product-select" class="form-control custom-select">
+                <option value="0" disabled selected>Select Course</option>
+                <option value="htmlandcss">HTML CSS & Basics of JS</option>
+                <option value="vuejs">Introduction to Vue</option>
+                <option value="reactjs">Introduction to React</option>
+                <option value="angularjs">Introduction to Angular</option>
+                <option value="sveltejs">Introduction to Svelte</option>
+              </select>
+        </div>
+        <div class="form-group">
+            <input type="number" id="rating-control" class="form-control" step="0.1" max="5" placeholder="Rate 1 - 5" disabled>
+        </div>
+
+
+        <table class="table table-striped">
+            <thead>
+                <th>All Courses</th>
+                <th>Rating</th>
+            </thead>
+            <tbody>
+                <tr class="htmlandcss">
+                    <td>HTML CSS & Basics of JS</td>
+                    <td>
+                        <div class="stars-outer">
+                            <div class="stars-inner"></div>
+                        </div>
+                        <span class="number-rating"></span>
+                    </td>
+                </tr>
+                <tr class="vuejs">
+                    <td>Introduction to Vue</td>
+                    <td>
+                        <div class="stars-outer">
+                            <div class="stars-inner"></div>
+                        </div>
+                        <span class="number-rating"></span>
+                    </td>
+                </tr>
+                <tr class="reactjs">
+                    <td>Introduction to React</td>
+                    <td>
+                        <div class="stars-outer">
+                            <div class="stars-inner"></div>
+                        </div>
+                        <span class="number-rating"></span>
+                    </td>
+                </tr>
+                <tr class="angularjs">
+                    <td>Introduction to Angular</td>
+                    <td>
+                        <div class="stars-outer">
+                            <div class="stars-inner"></div>
+                        </div>
+                        <span class="number-rating"></span>
+                    </td>
+                </tr>
+                <tr class="sveltejs">
+                    <td>Introduction to Svelte</td>
+                    <td>
+                        <div class="stars-outer">
+                            <div class="stars-inner"></div>
+                        </div>
+                        <span class="number-rating"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Initial Ratings
+        const ratings = {
+            htmlandcss: 3.2,
+            vuejs: 4.5,
+            reactjs: 3,
+            angularjs: 2.3,
+            sveltejs: 5
+        }
+
+        // Total stars
+        const starsTotal = 5;
+
+        // Run getRatings when DOM loads
+        document.addEventListener('DOMContentLoaded', getRatings);
+
+        // Form Elements
+        const productSelect = document.getElementById('product-select');
+        const ratingControl = document.getElementById('rating-control');
+
+        // Init product
+        let product;
+
+        // Product select change
+        productSelect.addEventListener('change', (e) => {
+            product = e.target.value;
+            // Enable rating control
+            ratingControl.disabled = false;
+            ratingControl.value = ratings[product];
+        });
+
+        // Rating control change
+        ratingControl.addEventListener('blur', (e) => {
+            const rating = e.target.value;
+
+            // Make sure 5 or under
+            if (rating > 5) {
+                alert('Please rate 1 - 5');
+                return;
+            }
+
+            // Change rating
+            ratings[product] = rating;
+
+            getRatings();
+        });
+
+        // Get ratings
+        function  getRatings() {
+            for(let rating in ratings){
+                console.log(ratings[rating]);
+                // Get percentage value
+                const starPresentage = (ratings[rating] / starsTotal) * 100;
+
+                // Round that nearest ten.
+                const starPresentageRounded = `${Math.round(starPresentage / 10 ) * 10}%`;
+                console.log(starPresentageRounded);
+
+                // Set width of star-inner to percentage 
+                document.querySelector(`.${rating} .stars-inner`).style.width = starPresentageRounded;
+
+                // Add number rating
+                document.querySelector(`.${rating} .number-rating`).innerHTML = ratings[rating];
+            }
+        }
+    </script>
+</body>
+</html>
